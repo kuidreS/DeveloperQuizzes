@@ -1,8 +1,15 @@
 package vserdiuk.tech.test;
 
 import nl.garvelink.iban.IBAN;
+import vserdiuk.tech.test.entity.Account;
+import vserdiuk.tech.test.entity.AccountActivity;
+import vserdiuk.tech.test.entity.Address;
+import vserdiuk.tech.test.entity.Person;
+import vserdiuk.tech.test.exception.AccountOperationsNotAvailable;
+import vserdiuk.tech.test.exception.NotEnoughMoneyAccountException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -11,15 +18,34 @@ import java.util.Locale;
  */
 
 public class BankingApp {
-    public static void main(String[] args) {
-        BigDecimal b1 = BigDecimal.ONE;
-        BigDecimal b2 = BigDecimal.TEN;
+    public static void main(String[] args) throws AccountOperationsNotAvailable, NotEnoughMoneyAccountException {
 
-        boolean isLessOrEquals = false;
-        if (b2.compareTo(b1) == 1 || b2.compareTo(b1) == 0) {
-            isLessOrEquals = true;
-        }
+        Address address = new Address.AddressBuilder()
+                .setCountry("SomeCountry")
+                .setCity("SomeCity")
+                .setBuildingNumber("1A")
+                .build();
+        Person person = new Person.PersonBuilder()
+                .setFirstName("John")
+                .setLastName("Doe")
+                .setBirthday(LocalDate.of(1991, 1, 2))
+                .setAddress(address)
+                .setPersonalIdNumber(1234567890l)
+                .build();
 
-        System.out.println(isLessOrEquals);
+        IBAN iban = IBAN.valueOf( "NL91ABNA0417164300" );
+        Account account = new Account.AccountBuilder()
+                .setOwner(person)
+                .setIban(iban)
+                .setAccountActivity(AccountActivity.ACTIVE)
+                .setBalance(BigDecimal.valueOf(1234.5))
+                .build();
+        System.out.println("Current account balance = " + account.getBalance());
+
+        account.addMoney(BigDecimal.valueOf(9876.5));
+        System.out.println("Account balance after adding money = " + account.getBalance());
+
+
+
     }
 }

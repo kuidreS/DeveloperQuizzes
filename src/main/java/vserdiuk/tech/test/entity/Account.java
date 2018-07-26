@@ -13,22 +13,23 @@ import java.util.Objects;
  * Created by vserdiuk on 7/26/18
  */
 
-public class Account {
+public class Account implements AccountMovements {
 
     private IBAN iban; // The International Bank Account Number
-    private Currency currency; // The account currency
+    private Currency currency;
     private Person owner; // The account owner (bank customer)
     private BigDecimal balance;
     private AccountActivity accountActivity; // The account has several activity options: ACTIVE, BLOCKED, FROZEN, CANCELED
 
     public Account(AccountBuilder builder) {
         this.iban = builder.iban;
-        this.currency = builder.currency;
+        this.currency = ApplicationUtil.getCurrency(this.iban);
         this.owner = builder.owner;
         this.balance = builder.balance;
         this.accountActivity = builder.accountActivity;
     }
 
+    @Override
     public void addMoney(BigDecimal moneyAmount) throws AccountOperationsNotAvailable {
         boolean isAddPossible = ApplicationUtil.getAccountAvailability(this.accountActivity);
         if (isAddPossible) {
@@ -38,6 +39,7 @@ public class Account {
         }
     }
 
+    @Override
     public void withdrawMoney(BigDecimal moneyAmount) throws NotEnoughMoneyAccountException, AccountOperationsNotAvailable {
         boolean isWithdrawPossible = ApplicationUtil.getWithdrawPermission(this.accountActivity);
         if (isWithdrawPossible) {
@@ -75,6 +77,7 @@ public class Account {
         this.owner = owner;
     }
 
+    @Override
     public BigDecimal getBalance() throws AccountOperationsNotAvailable {
         boolean isAccountAvailable = ApplicationUtil.getAccountAvailability(this.accountActivity);
         if (isAccountAvailable) {
@@ -127,7 +130,7 @@ public class Account {
 
     public static class AccountBuilder {
         private IBAN iban;
-        private Currency currency = ApplicationUtil.getCurrency(this.iban);
+        private Currency currency;
         private Person owner;
         private BigDecimal balance = BigDecimal.ZERO;
         private AccountActivity accountActivity;

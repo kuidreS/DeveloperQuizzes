@@ -14,7 +14,7 @@ import java.util.UUID;
  * Created by vserdiuk on 7/26/18
  */
 
-public class CheckingAccount extends Account {
+public class CheckingAccount extends Account implements Transfer {
 
     private BigDecimal limit;
 
@@ -28,6 +28,7 @@ public class CheckingAccount extends Account {
         ApplicationUtil.withdrawWithLimit(isWithdrawPossible, moneyAmount, this);
     }
 
+    @Override
     public void transferMoney(CheckingAccount recipientAccount, BigDecimal amount) throws AccountOperationsNotAvailable {
         Transaction transaction = new Transaction
                 .TransactionBuilder()

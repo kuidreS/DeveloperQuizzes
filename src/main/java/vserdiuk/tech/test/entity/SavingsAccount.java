@@ -12,7 +12,7 @@ import java.util.Objects;
  * Created by vserdiuk on 7/26/18
  */
 
-public class SavingsAccount extends Account{
+public class SavingsAccount extends Account implements Savings{
 
     private InterestRate interestRate;
 
@@ -21,6 +21,7 @@ public class SavingsAccount extends Account{
         this.interestRate = builder.interestRate;
     }
 
+    @Override
     public void payInterestsToAccountOwner() {
         try {
             if (super.getAccountActivity().equals(AccountActivity.ACTIVE) && super.getBalance().compareTo(BigDecimal.ZERO) != 0) {
